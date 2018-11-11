@@ -1,6 +1,8 @@
+%define debug_package %{nil}
+
 Name:           ocaml-configurator
-Version:       	0.11.0
-Release:        0.0%{?dist}
+Version:        0.11.0
+Release:        0.1%{?dist}
 Summary:        Helper library for gathering system configuration
 
 %global libname %(echo %{name} | sed -e 's/^ocaml-//')
@@ -70,5 +72,8 @@ make install PREFIX=$OCAMLFIND_DESTDIR
 %endif
 
 %changelog
+* Sun Nov 11 2018 Lucas Bickel <hairmare@rabe.ch> - 0.11.0-0.1
+- Fix Fedora build by disabling debug package
+
 * Sun Nov 11 2018 Lucas Bickel <hairmare@rabe.ch> - 0.11.0-0.0
 - Initial build for pcre-ocaml package bump
