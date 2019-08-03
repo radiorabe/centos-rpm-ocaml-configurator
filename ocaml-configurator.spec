@@ -2,7 +2,7 @@
 
 Name:           ocaml-configurator
 Version:        0.11.0
-Release:        0.1%{?dist}
+Release:        0.2%{?dist}
 Summary:        Helper library for gathering system configuration
 
 %global libname %(echo %{name} | sed -e 's/^ocaml-//')
@@ -35,16 +35,11 @@ files for developing applications that use %{name}.
 %prep
 %autosetup -n %{libname}-%{version}
 
-# Generate debuginfo, or try to.
-sed 's/ocamlc/ocamlc -g/g' -i Makefile
-sed 's/ocamlopt/ocamlopt -g/g' -i Makefile
-
 %build
 %make_build
 
 %install
 # Currently configurator installs itself with ocamlfind.
-export DESTDIR=%{buildroot}
 export OCAMLFIND_DESTDIR=%{buildroot}/%{_libdir}/ocaml
 mkdir -p $OCAMLFIND_DESTDIR
 make install PREFIX=$OCAMLFIND_DESTDIR
@@ -53,25 +48,28 @@ make install PREFIX=$OCAMLFIND_DESTDIR
 %doc README.org
 %doc %{_libdir}/ocaml/doc/%{libname}
 %license LICENSE.txt
-%{_libdir}/ocaml/%{libname}
+%{_libdir}/ocaml/lib/%{libname}
 %ifarch %{ocaml_native_compiler}
-%exclude %{_libdir}/ocaml/%{libname}/*.a
-%exclude %{_libdir}/ocaml/%{libname}/*.cmxa
-%exclude %{_libdir}/ocaml/%{libname}/*.cmx
-%exclude %{_libdir}/ocaml/%{libname}/*.ml
-%exclude %{_libdir}/ocaml/%{libname}/*.mli
+%exclude %{_libdir}/ocaml/%{libname}/lib/*.a
+%exclude %{_libdir}/ocaml/lib/%{libname}/*.cmxa
+%exclude %{_libdir}/ocaml/lib/%{libname}/*.cmx
+%exclude %{_libdir}/ocaml/lib/%{libname}/*.ml
+%exclude %{_libdir}/ocaml/lib/%{libname}/*.mli
 %endif
 
 %files devel
 %license LICENSE.txt
 %ifarch %{ocaml_native_compiler}
-%{_libdir}/ocaml/%{libname}/*.a
-%{_libdir}/ocaml/%{libname}/*.cmxa
-%{_libdir}/ocaml/%{libname}/*.cmx
-%{_libdir}/ocaml/%{libname}/*.mli
+%{_libdir}/ocaml/lib/%{libname}/*.a
+%{_libdir}/ocaml/lib/%{libname}/*.cmxa
+%{_libdir}/ocaml/lib/%{libname}/*.cmx
+%{_libdir}/ocaml/lib/%{libname}/*.mli
 %endif
 
 %changelog
+* Sat Aug  3 2019 Lucas Bickel <hairmare@rabe.ch> - 0.11.0-0.2
+- Fix building with dune instead of jbuilder
+
 * Sun Nov 11 2018 Lucas Bickel <hairmare@rabe.ch> - 0.11.0-0.1
 - Fix Fedora build by disabling debug package
 
