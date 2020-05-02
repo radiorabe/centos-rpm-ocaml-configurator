@@ -2,7 +2,7 @@
 
 Name:           ocaml-configurator
 Version:        0.11.0
-Release:        0.2%{?dist}
+Release:        0.3%{?dist}
 Summary:        Helper library for gathering system configuration
 
 %global libname %(echo %{name} | sed -e 's/^ocaml-//')
@@ -11,10 +11,11 @@ Summary:        Helper library for gathering system configuration
 License:        Apache-2.0
 URL:            https://github.com/janestreet/configurator/
 Source0:        https://github.com/janestreet/configurator/archive/v%{version}/%{name}-%{version}.tar.gz
+Patch0:         ocaml-configurator-0.11.0-pervasives-from-stdlib.patch
 
-BUildRequires:  jbuilder
 BuildRequires:  ocaml
 BuildRequires:  ocaml-base-devel
+BuildRequires:  ocaml-dune
 BuildRequires:  ocaml-findlib
 BuildRequires:  ocaml-stdio-devel
 
@@ -33,7 +34,8 @@ The %{name}-devel package contains libraries and signature
 files for developing applications that use %{name}.
 
 %prep
-%autosetup -n %{libname}-%{version}
+%setup -q -n %{libname}-%{version}
+%patch -P 0 -p 1
 
 %build
 %make_build
@@ -42,31 +44,37 @@ files for developing applications that use %{name}.
 # Currently configurator installs itself with ocamlfind.
 export OCAMLFIND_DESTDIR=%{buildroot}/%{_libdir}/ocaml
 mkdir -p $OCAMLFIND_DESTDIR
-make install PREFIX=$OCAMLFIND_DESTDIR
+# use dune install instead of make install to allow using --libdir
+dune install --prefix=$OCAMLFIND_DESTDIR --libdir=$OCAMLFIND_PREFIX
 
 %files
 %doc README.org
 %doc %{_libdir}/ocaml/doc/%{libname}
 %license LICENSE.txt
-%{_libdir}/ocaml/lib/%{libname}
+%{_libdir}/ocaml/%{libname}
 %ifarch %{ocaml_native_compiler}
-%exclude %{_libdir}/ocaml/%{libname}/lib/*.a
-%exclude %{_libdir}/ocaml/lib/%{libname}/*.cmxa
-%exclude %{_libdir}/ocaml/lib/%{libname}/*.cmx
-%exclude %{_libdir}/ocaml/lib/%{libname}/*.ml
-%exclude %{_libdir}/ocaml/lib/%{libname}/*.mli
+%exclude %{_libdir}/ocaml/%{libname}/*.a
+%exclude %{_libdir}/ocaml/%{libname}/*.cmxa
+%exclude %{_libdir}/ocaml/%{libname}/*.cmx
+%exclude %{_libdir}/ocaml/%{libname}/*.ml
+%exclude %{_libdir}/ocaml/%{libname}/*.mli
 %endif
 
 %files devel
 %license LICENSE.txt
 %ifarch %{ocaml_native_compiler}
-%{_libdir}/ocaml/lib/%{libname}/*.a
-%{_libdir}/ocaml/lib/%{libname}/*.cmxa
-%{_libdir}/ocaml/lib/%{libname}/*.cmx
-%{_libdir}/ocaml/lib/%{libname}/*.mli
+%{_libdir}/ocaml/%{libname}/*.a
+%{_libdir}/ocaml/%{libname}/*.cmxa
+%{_libdir}/ocaml/%{libname}/*.cmx
+%{_libdir}/ocaml/%{libname}/*.mli
 %endif
 
 %changelog
+* Sat May  2 2020 Lucas Bickel <hairmare@rabe.ch> - 0.11.0-0.3
+- Fix lib paths
+- use dune bin instead of jbuilder bin
+- Replace Pervasives with Stdlib to support newer ocaml versions
+
 * Sat Aug  3 2019 Lucas Bickel <hairmare@rabe.ch> - 0.11.0-0.2
 - Fix building with dune instead of jbuilder
 
