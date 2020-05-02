@@ -36,6 +36,7 @@ files for developing applications that use %{name}.
 %prep
 %setup -q -n %{libname}-%{version}
 %patch -P 0 -p 1
+sed -i -e 's@jbuilder@dune@g' Makefile
 
 %build
 %make_build
