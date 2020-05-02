@@ -22,4 +22,7 @@ curl -o /etc/yum.repos.d/liquidsoap.repo "https://download.opensuse.org/reposito
 
 chown root:root ocaml-configurator.spec
 
+mkdir -p /root/rpmbuild/SOURCES/
+cp ocaml-configurator-0.11.0-pervasives-from-stdlib.patch /root/rpmbuild/SOURCES/
+
 build-rpm-package.sh ocaml-configurator.spec

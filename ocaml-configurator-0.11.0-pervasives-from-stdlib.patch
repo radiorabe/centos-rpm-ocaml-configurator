@@ -1,0 +1,11 @@
+--- a/src/configurator.ml
++++ b/src/configurator.ml
+@@ -5,7 +5,7 @@ module Sys        = Caml.Sys
+ module Fn         = Caml.Filename
+ module Arg        = Caml.Arg
+ module Buffer     = Caml.Buffer
+-module Pervasives = Caml.Pervasives
++module Pervasives = Stdlib
+ 
+ let ( ^^ ) = Caml.( ^^ )
+ let ( ^/ ) = Fn.concat
